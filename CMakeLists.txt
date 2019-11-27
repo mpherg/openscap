@@ -467,6 +467,7 @@ include_directories(
 	"src/XCCDF_POLICY/public/"
 	${CMAKE_BINARY_DIR} # config.h is generated to build directory
 	${LIBXML2_INCLUDE_DIR}
+	${PCRE_INCLUDE_DIR}
 )
 
 # Honor visibility properties for all target types

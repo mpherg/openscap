@@ -212,7 +212,7 @@ static fsdev_t *__fsdev_init(fsdev_t *lfs)
 	struct stat st;
 	int i;
 
-	lfs->cnt = getmntinfo(&mntbuf, (fs == NULL ? MNT_LOCAL : 0) | MNT_NOWAIT);
+	lfs->cnt = getmntinfo(&mntbuf, MNT_LOCAL | MNT_NOWAIT);
 	lfs->ids = malloc(sizeof(dev_t) * lfs->cnt);
 
 	for (i = 0; i < lfs->cnt; ++i) {

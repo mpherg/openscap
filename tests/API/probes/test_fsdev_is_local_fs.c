@@ -20,12 +20,15 @@
  *      "Jan Černý" <jcerny@redhat.com>
  */
 
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
 #include <stdio.h>
 #include <string.h>
+
+#if defined(OS_LINUX)
 #include <mntent.h>
 #include "fsdev.h"
 #include "fsdev.c"
@@ -73,3 +76,12 @@ int main(int argc, char *argv[])
 	}
 	return 0;
 }
+
+#else
+int main()
+{
+  fprintf(stderr, "test_fsdev_is_local_fs not enabled for this OS\n");
+  return 1;
+}
+
+#endif

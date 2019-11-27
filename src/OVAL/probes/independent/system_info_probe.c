@@ -123,6 +123,37 @@ static char *get_mac(const struct ifaddrs *ifa, int fd)
 
        return mac_buf;
 }
+
+#elif defined(OS_OSX)
+#include <ifaddrs.h>
+#include <net/if_dl.h>
+#include <stdio.h>
+#include <sys/param.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <pcre.h>
+#define _REGEX_RES_VECSIZE     3
+#define _REGEX_MENUENTRY       "(?<=menuentry ').*?(?=')"
+#define _REGEX_SAVED_ENTRY_NR  "(?<=saved_entry=)[0-9]+"
+#define _REGEX_SAVED_ENTRY     "(?<=saved_entry=).*"
+#define _REGEX_ARCH            "(?<=\\.)i386|i686|x86_64|ia64|alpha|amd64|arm|armeb|armel|hppa|m32r" \
+		               "|m68k|mips|mipsel|powerpc|ppc64|s390|s390x|sh3|sh3eb|sh4|sh4eb|sparc"
+#define MAX_BUFFER_SIZE        4096
+#define HOST_NAME_MAX          MAXHOSTNAMELEN
+static char *get_mac(const struct ifaddrs *ifa, int fd)
+{
+  unsigned char* ptr;
+  static char mac_buf[20];
+
+  if (ifa->ifa_addr->sa_family == AF_LINK)
+  {
+    ptr = (unsigned char *)LLADDR((struct sockaddr_dl *)(ifa)->ifa_addr);
+    snprintf(mac_buf, sizeof(mac_buf), "%02X:%02X:%02X:%02X:%02X:%02X", *ptr,
+             *(ptr + 1), *(ptr + 2), *(ptr + 3), *(ptr + 4), *(ptr + 5));
+  }
+  return mac_buf;
+}
+
 #elif defined(OS_SOLARIS)
 #include <sys/socket.h>
 #include <ifaddrs.h>
